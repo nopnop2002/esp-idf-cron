@@ -1,5 +1,5 @@
 # esp-idf-cron
-Example of CRON with esp-idf.
+Example of CRON with esp-idf.   
 I found [this](https://github.com/staticlibs/ccronexpr) library.   
 Defining dates and times in crontab is complicated, but this library handles it well.   
 It's Great job.   
