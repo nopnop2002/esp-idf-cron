@@ -6,6 +6,9 @@
 	 software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 	 CONDITIONS OF ANY KIND, either express or implied.
 */
+
+#include <stdio.h>
+#include <inttypes.h>
 #include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -314,7 +317,7 @@ esp_err_t build_table(char *fileName, CRON_t **tables, int16_t *ntable) {
 #define delayMillSec 10*1000 // 10 Seconds
 
 void task1(void *pvParameters) {
-	ESP_LOGI(pcTaskGetName(0), "%d Start", xTaskGetCurrentTaskHandle());
+	ESP_LOGI(pcTaskGetName(0), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
 	while(1) {
 		ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
 		ESP_LOGI(pcTaskGetName(0), "Wake Up");
@@ -327,7 +330,7 @@ void task1(void *pvParameters) {
 }
 
 void task2(void *pvParameters) {
-	ESP_LOGI(pcTaskGetName(0), "%d Start", xTaskGetCurrentTaskHandle());
+	ESP_LOGI(pcTaskGetName(0), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
 	while(1) {
 		ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
 		ESP_LOGI(pcTaskGetName(0), "Wake Up");
@@ -340,7 +343,7 @@ void task2(void *pvParameters) {
 }
 
 void task3(void *pvParameters) {
-	ESP_LOGI(pcTaskGetName(0), "%d Start", xTaskGetCurrentTaskHandle());
+	ESP_LOGI(pcTaskGetName(0), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
 	while(1) {
 		ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
 		ESP_LOGI(pcTaskGetName(0), "Wake Up");
@@ -353,7 +356,7 @@ void task3(void *pvParameters) {
 }
 
 void task4(void *pvParameters) {
-	ESP_LOGI(pcTaskGetName(0), "%d Start", xTaskGetCurrentTaskHandle());
+	ESP_LOGI(pcTaskGetName(0), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
 	while(1) {
 		ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
 		ESP_LOGI(pcTaskGetName(0), "Wake Up");
@@ -366,7 +369,7 @@ void task4(void *pvParameters) {
 }
 
 void task5(void *pvParameters) {
-	ESP_LOGI(pcTaskGetName(0), "%d Start", xTaskGetCurrentTaskHandle());
+	ESP_LOGI(pcTaskGetName(0), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
 	while(1) {
 		ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
 		ESP_LOGI(pcTaskGetName(0), "Wake Up");
@@ -379,7 +382,7 @@ void task5(void *pvParameters) {
 }
 
 void task6(void *pvParameters) {
-	ESP_LOGI(pcTaskGetName(0), "%d Start", xTaskGetCurrentTaskHandle());
+	ESP_LOGI(pcTaskGetName(0), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
 	while(1) {
 		ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
 		ESP_LOGI(pcTaskGetName(0), "Wake Up");
@@ -479,7 +482,7 @@ void app_main(void)
 
 				// Get "fire" taskhandle
 				TaskHandle_t taskHandle = xTaskGetHandle((crontab+index)->taskName);
-				ESP_LOGD(TAG, "taskHandle=%d", taskHandle);
+				ESP_LOGD(TAG, "taskHandle=%"PRIu32, (uint32_t)taskHandle);
 				if (taskHandle != NULL) {
 #if 0
 					eTaskState taskState = eTaskGetState(taskHandle);
