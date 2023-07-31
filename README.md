@@ -8,7 +8,6 @@ It's Great job.
 ```
 git clone https://github.com/nopnop2002/esp-idf-cron
 cd esp-idf-cron
-idf.py set-target {esp32/esp32s2/esp32s3/esp32c3}
 idf.py menuconfig
 idf.py flash
 ```
