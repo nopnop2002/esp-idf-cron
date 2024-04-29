@@ -91,9 +91,9 @@ You must consider the time required to perform the task.
 
 # Screen Shot
 Tasks are different in the morning and afternoon.   
-In the morning, execute task1 and task2.   
+In the morning, execute task1 and task3.   
 Execute task5 at exactly 12 o'clock.   
-In the afternoon, execute task3 and task4.   
+In the afternoon, execute task2 and task4.   
 
 ![ScreenShot-2](https://user-images.githubusercontent.com/6020549/189264777-07366c62-39d5-4061-854c-f161b5739b7c.jpg)
 
