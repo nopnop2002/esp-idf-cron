@@ -44,7 +44,7 @@ Supports cron expressions with seconds field.
 In Linux you specify the command, but in this project you specify the task name.   
 Note:   
 Task names in FreeRTOS are function names.   
-A task creation is a function call.   
+Tasks are created using the ```xTaskCreate``` function.
 However, each task works independently.   
 
 ```
