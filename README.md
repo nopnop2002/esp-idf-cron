@@ -87,7 +87,7 @@ Example of starting every 10 seconds:
 10:00:10 Wake up a task again. But the task is still running.
 10:00:15 Task ends. The task wakes up immediately.
 ```
-You have to consider task execution time.   
+You must consider the time required to perform the task.   
 
 # Screen Shot
 Tasks are different in the morning and afternoon.   
