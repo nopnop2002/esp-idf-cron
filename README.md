@@ -98,3 +98,5 @@ In the afternoon, execute task2 and task4.
 ![ScreenShot-2](https://user-images.githubusercontent.com/6020549/189264777-07366c62-39d5-4061-854c-f161b5739b7c.jpg)
 
 
+# Crontab syntax
+https://docs.passwork.pro/crontab-basics
