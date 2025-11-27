@@ -1,10 +1,11 @@
-/* LwIP SNTP example
+/*
+	cron example for ESP-IDF
 
-	 This example code is in the Public Domain (or CC0 licensed, at your option.)
+	This example code is in the Public Domain (or CC0 licensed, at your option.)
 
-	 Unless required by applicable law or agreed to in writing, this
-	 software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-	 CONDITIONS OF ANY KIND, either express or implied.
+	Unless required by applicable law or agreed to in writing, this
+	software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+	CONDITIONS OF ANY KIND, either express or implied.
 */
 
 #include <stdio.h>
@@ -24,12 +25,6 @@
 
 #include "ccronexpr.h"
 
-#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0))
-#define sntp_setoperatingmode esp_sntp_setoperatingmode
-#define sntp_setservername esp_sntp_setservername
-#define sntp_init esp_sntp_init
-#endif
-
 /* FreeRTOS event group to signal when we are connected*/
 static EventGroupHandle_t s_wifi_event_group;
 
@@ -43,8 +38,7 @@ static const char *TAG = "main";
 
 static int s_retry_num = 0;
 
-static void event_handler(void* arg, esp_event_base_t event_base,
-																int32_t event_id, void* event_data)
+static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
 {
 	if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
 		esp_wifi_connect();
@@ -70,7 +64,6 @@ esp_err_t wifi_init_sta(void)
 	s_wifi_event_group = xEventGroupCreate();
 
 	ESP_ERROR_CHECK(esp_netif_init());
-
 	ESP_ERROR_CHECK(esp_event_loop_create_default());
 	esp_netif_create_default_wifi_sta();
 
@@ -105,12 +98,10 @@ esp_err_t wifi_init_sta(void)
 			},
 		},
 	};
-	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA) );
-	ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config) );
-	//ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_NONE));
-	ESP_ERROR_CHECK(esp_wifi_start() );
-
-	ESP_LOGI(TAG, "wifi_init_sta finished.");
+	ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_NONE));
+	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+	ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
+	ESP_ERROR_CHECK(esp_wifi_start());
 
 	/* Waiting until either the connection is established (WIFI_CONNECTED_BIT) or connection failed for the maximum
 	 * number of re-tries (WIFI_FAIL_BIT). The bits are set by event_handler() (see above) */
@@ -133,11 +124,9 @@ esp_err_t wifi_init_sta(void)
 		ret_value = ESP_FAIL;
 	}
 
-#if 0
 	/* The event will not be processed after unregister */
 	ESP_ERROR_CHECK(esp_event_handler_instance_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, instance_got_ip));
 	ESP_ERROR_CHECK(esp_event_handler_instance_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, instance_any_id));
-#endif
 	vEventGroupDelete(s_wifi_event_group);
 	return ret_value;
 }
@@ -204,12 +193,12 @@ void time_sync_notification_cb(struct timeval *tv)
 static void initialize_sntp(void)
 {
 	ESP_LOGI(TAG, "Initializing SNTP");
-	sntp_setoperatingmode(SNTP_OPMODE_POLL);
+	esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
 	//sntp_setservername(0, "pool.ntp.org");
 	ESP_LOGI(TAG, "Your NTP Server is %s", CONFIG_NTP_SERVER);
-	sntp_setservername(0, CONFIG_NTP_SERVER);
+	esp_sntp_setservername(0, CONFIG_NTP_SERVER);
 	sntp_set_time_sync_notification_cb(time_sync_notification_cb);
-	sntp_init();
+	esp_sntp_init();
 }
 
 static esp_err_t obtain_time(void)
@@ -322,79 +311,79 @@ esp_err_t build_table(char *fileName, CRON_t **tables, int16_t *ntable) {
 #define delayMillSec 10*1000 // 10 Seconds
 
 void task1(void *pvParameters) {
-	ESP_LOGI(pcTaskGetName(0), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
+	ESP_LOGI(pcTaskGetName(NULL), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
 	while(1) {
 		ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
-		ESP_LOGI(pcTaskGetName(0), "Wake Up");
+		ESP_LOGI(pcTaskGetName(NULL), "Wake Up");
 		// Do something
 		vTaskDelay(delayMillSec/portTICK_PERIOD_MS);
 		// Do something
-		ESP_LOGD(pcTaskGetName(0), "Wait for Notify");
+		ESP_LOGD(pcTaskGetName(NULL), "Wait for Notify");
 	}
 	vTaskDelete(NULL);
 }
 
 void task2(void *pvParameters) {
-	ESP_LOGI(pcTaskGetName(0), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
+	ESP_LOGI(pcTaskGetName(NULL), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
 	while(1) {
 		ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
-		ESP_LOGI(pcTaskGetName(0), "Wake Up");
+		ESP_LOGI(pcTaskGetName(NULL), "Wake Up");
 		// Do something
 		vTaskDelay(delayMillSec/portTICK_PERIOD_MS);
 		// Do something
-		ESP_LOGD(pcTaskGetName(0), "Wait for Notify");
+		ESP_LOGD(pcTaskGetName(NULL), "Wait for Notify");
 	}
 	vTaskDelete(NULL);
 }
 
 void task3(void *pvParameters) {
-	ESP_LOGI(pcTaskGetName(0), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
+	ESP_LOGI(pcTaskGetName(NULL), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
 	while(1) {
 		ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
-		ESP_LOGI(pcTaskGetName(0), "Wake Up");
+		ESP_LOGI(pcTaskGetName(NULL), "Wake Up");
 		// Do something
 		vTaskDelay(delayMillSec/portTICK_PERIOD_MS);
 		// Do something
-		ESP_LOGD(pcTaskGetName(0), "Wait for Notify");
+		ESP_LOGD(pcTaskGetName(NULL), "Wait for Notify");
 	}
 	vTaskDelete(NULL);
 }
 
 void task4(void *pvParameters) {
-	ESP_LOGI(pcTaskGetName(0), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
+	ESP_LOGI(pcTaskGetName(NULL), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
 	while(1) {
 		ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
-		ESP_LOGI(pcTaskGetName(0), "Wake Up");
+		ESP_LOGI(pcTaskGetName(NULL), "Wake Up");
 		// Do something
 		vTaskDelay(delayMillSec/portTICK_PERIOD_MS);
 		// Do something
-		ESP_LOGD(pcTaskGetName(0), "Wait for Notify");
+		ESP_LOGD(pcTaskGetName(NULL), "Wait for Notify");
 	}
 	vTaskDelete(NULL);
 }
 
 void task5(void *pvParameters) {
-	ESP_LOGI(pcTaskGetName(0), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
+	ESP_LOGI(pcTaskGetName(NULL), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
 	while(1) {
 		ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
-		ESP_LOGI(pcTaskGetName(0), "Wake Up");
+		ESP_LOGI(pcTaskGetName(NULL), "Wake Up");
 		// Do something
 		vTaskDelay(delayMillSec/portTICK_PERIOD_MS);
 		// Do something
-		ESP_LOGD(pcTaskGetName(0), "Wait for Notify");
+		ESP_LOGD(pcTaskGetName(NULL), "Wait for Notify");
 	}
 	vTaskDelete(NULL);
 }
 
 void task6(void *pvParameters) {
-	ESP_LOGI(pcTaskGetName(0), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
+	ESP_LOGI(pcTaskGetName(NULL), "%"PRIu32" Start", (uint32_t)xTaskGetCurrentTaskHandle());
 	while(1) {
 		ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
-		ESP_LOGI(pcTaskGetName(0), "Wake Up");
+		ESP_LOGI(pcTaskGetName(NULL), "Wake Up");
 		// Do something
 		vTaskDelay(delayMillSec/portTICK_PERIOD_MS);
 		// Do something
-		ESP_LOGD(pcTaskGetName(0), "Wait for Notify");
+		ESP_LOGD(pcTaskGetName(NULL), "Wait for Notify");
 	}
 	vTaskDelete(NULL);
 }
@@ -410,14 +399,10 @@ void app_main(void)
 	ESP_ERROR_CHECK(ret);
 
 	// Initialize WiFi
-	wifi_init_sta();
+	ESP_ERROR_CHECK(wifi_init_sta());
 
 	// Obtain time over NTP
-	ret = obtain_time();
-	if(ret != ESP_OK) {
-		ESP_LOGE(TAG, "Fail to getting time over NTP.");
-		return;
-	}
+	ESP_ERROR_CHECK(obtain_time());
 
 #if 0
 	// Print current time
@@ -433,11 +418,7 @@ void app_main(void)
 	// Mount SPIFFS
 	char *partition_label = "storage";
 	char *base_path = "/spiffs"; 
-	ret = mountSPIFFS(partition_label, base_path);
-	if (ret != ESP_OK) {
-		ESP_LOGE(TAG, "mountSPIFFS fail");
-		while(1) { vTaskDelay(1); }
-	}
+	ESP_ERROR_CHECK(mountSPIFFS(partition_label, base_path));
 	printSPIFFS(base_path);
 	
 	// Read crontab
